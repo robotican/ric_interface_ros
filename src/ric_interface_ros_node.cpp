@@ -44,6 +44,7 @@ class RicRosObserver : public ric::RicObserver
     bool publish_error = true;
     bool publish_keepalive = true;
 
+
     void on_update(const ric::protocol::package &ric_package)
     {
         //fprintf(stderr, "%i", ric_package.type);

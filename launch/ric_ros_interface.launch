@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+
+<launch>
+        
+    <node name="ric_ros_interface_node" pkg="ric_ros_interface" type="ric_ros_interface_node" respawn="false" output="screen">
+        
+        <!--toggle publishers-->
+        <param name="publish_location" value="true" />
+        <param name="publish_orientation" value="true" />
+        <param name="publish_encoder" value="true" />
+        <param name="publish_servo" value="true" />
+        <param name="publish_toggle" value="true" />
+        <param name="publish_proximity" value="true" />
+        <param name="publish_logger" value="true" />
+        <param name="publish_error" value="true" />
+        <param name="publish_keepalive" value="true" />
+
+    </node>
+  
+</launch>
