@@ -17,6 +17,10 @@
 #include <ric_interface_ros/Error.h>
 #include <ric_interface_ros/Keepalive.h>
 
+
+
+//TODO: open rosserver for commands to ricboard
+
 ric::RicInterface ric_iface;
 
 
