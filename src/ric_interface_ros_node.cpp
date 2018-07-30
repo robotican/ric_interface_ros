@@ -112,18 +112,18 @@ class RicRosObserver : public ric::RicObserver
 
                     orientation_msg.id = orientation_pkg.id;
                     orientation_msg.type = orientation_pkg.type;
-                    orientation_msg.roll = orientation_pkg.type;
-                    orientation_msg.pitch = orientation_pkg.type;
-                    orientation_msg.yaw = orientation_pkg.type;
-                    orientation_msg.accl_x = orientation_pkg.type;
-                    orientation_msg.accl_y = orientation_pkg.type;
-                    orientation_msg.accl_z = orientation_pkg.type;
-                    orientation_msg.gyro_x = orientation_pkg.type;
-                    orientation_msg.gyro_y = orientation_pkg.type;
-                    orientation_msg.gyro_z = orientation_pkg.type;
-                    orientation_msg.mag_x = orientation_pkg.type;
-                    orientation_msg.mag_y = orientation_pkg.type;
-                    orientation_msg.mag_z = orientation_pkg.type;
+                    orientation_msg.roll = orientation_pkg.roll;
+                    orientation_msg.pitch = orientation_pkg.pitch;
+                    orientation_msg.yaw = orientation_pkg.yaw;
+                    orientation_msg.accl_x = orientation_pkg.accl_x;
+                    orientation_msg.accl_y = orientation_pkg.accl_y;
+                    orientation_msg.accl_z = orientation_pkg.accl_z;
+                    orientation_msg.gyro_x = orientation_pkg.gyro_x;
+                    orientation_msg.gyro_y = orientation_pkg.gyro_y;
+                    orientation_msg.gyro_z = orientation_pkg.gyro_z;
+                    orientation_msg.mag_x = orientation_pkg.mag_x;
+                    orientation_msg.mag_y = orientation_pkg.mag_y;
+                    orientation_msg.mag_z = orientation_pkg.mag_z;
 
                     orientation_pub_.publish(orientation_msg);
 

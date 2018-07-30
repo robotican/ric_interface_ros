@@ -2,7 +2,7 @@
 
 <launch>
         
-    <node name="ric_ros_interface_node" pkg="ric_ros_interface" type="ric_ros_interface_node" respawn="false" output="screen">
+    <node name="ric_interface_ros_node" pkg="ric_interface_ros" type="ric_interface_ros_node" respawn="false" output="screen">
         
         <!--toggle publishers-->
         <param name="publish_location" value="true" />
