@@ -304,14 +304,14 @@ int main(int argc, char **argv)
         ric_iface.loop();
 
 
-        if (ros::Time::now() - prev_time >= ros::Duration(0.02)) { // 50 hz
+        /*if (ros::Time::now() - prev_time >= ros::Duration(0.02)) { // 50 hz
             ric::protocol::servo_actu actu_pkg;
             actu_pkg.cmd = 1500;
             ric_iface.writeCmd(actu_pkg, sizeof(ric::protocol::servo_actu), ric::protocol::Type::SERVO);
             ric_iface.writeCmd(actu_pkg, sizeof(ric::protocol::servo_actu), ric::protocol::Type::SERVO);
             ric_iface.writeCmd(actu_pkg, sizeof(ric::protocol::servo_actu), ric::protocol::Type::SERVO);
             prev_time = ros::Time::now();
-        }
+        }*/
         ros::spinOnce;
     }
 }
