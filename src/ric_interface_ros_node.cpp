@@ -229,7 +229,7 @@ class RicRosObserver : public ric::RicObserver
             {
                 if (publish_servo)
                 {
-                    ric::protocol::servo_sensor servo_pkg = (ric::protocol::servo_sensor &) ric_package;
+                    ric::protocol::servo servo_pkg = (ric::protocol::servo&) ric_package;
 
                     ric_interface_ros::Servo servo_msg;
 
