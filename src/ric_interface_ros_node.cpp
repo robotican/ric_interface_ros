@@ -38,6 +38,8 @@ class RicRosObserver : public ric::RicObserver
     ros::Publisher error_pub_;
     ros::Publisher ka_pub_;
 
+    ros::Subscriber servo_cmd_sub_;
+
     bool publish_location = true;
     bool publish_orientation = true;
     bool publish_encoder = true;
@@ -47,6 +49,7 @@ class RicRosObserver : public ric::RicObserver
     bool publish_logger = true;
     bool publish_error = true;
     bool publish_keepalive = true;
+
 
 
     void on_update(const ric::protocol::package &ric_package)
@@ -242,6 +245,14 @@ class RicRosObserver : public ric::RicObserver
         }
     }
 
+
+    void onServoCommand(const ric_interface_ros::Encoder::ConstPtr& msg)
+    {
+        ric::protocol::servo servo_pkg;
+        servo_pkg.value = 1500;
+        ric_iface.writeCmd((ric::protocol::actuator&)servo_pkg, sizeof(ric::protocol::servo));
+    }
+
 public:
     RicRosObserver(ros::NodeHandle& nh)
     {
@@ -249,12 +260,14 @@ public:
         location_pub_ = nh.advertise<ric_interface_ros::Location>("ric/location", 10);
         orientation_pub_ = nh.advertise<ric_interface_ros::Orientation>("ric/orientation", 10);
         encoder_pub_ = nh.advertise<ric_interface_ros::Encoder>("ric/encoder", 10);
-        servo_pub_ = nh.advertise<ric_interface_ros::Servo>("ric/servo", 10);
+        servo_pub_ = nh.advertise<ric_interface_ros::Servo>("ric/servo/data", 10);
         toggle_pub_ = nh.advertise<ric_interface_ros::Toggle>("ric/toggle", 10);
         proximity_pub_ = nh.advertise<ric_interface_ros::Proximity>("ric/proximity", 10);
         logger_pub_ = nh.advertise<ric_interface_ros::Logger>("ric/logger", 10);
         error_pub_ = nh.advertise<ric_interface_ros::Error>("ric/error", 10);
         ka_pub_ = nh.advertise<ric_interface_ros::Keepalive>("ric/keepalive", 10);
+
+        servo_cmd_sub_ = nh.subscribe("ric/servo/cmd", 10, &RicRosObserver::onServoCommand, this);
 
         ros::param::get("~location", publish_location);
         ros::param::get("~orientation", publish_orientation);
@@ -273,7 +286,7 @@ int main(int argc, char **argv)
     ros::init(argc, argv, "ric_interface_node");
     ros::NodeHandle nh;
 
-    std::string port = "/dev/armadillo2/RICBOARD";
+    std::string port = "/dev/ttyACM0";
     ros::param::get("~ric_port", port);
 
 
@@ -303,13 +316,22 @@ int main(int argc, char **argv)
     {
         ric_iface.loop();
 
-
         /*if (ros::Time::now() - prev_time >= ros::Duration(0.02)) { // 50 hz
             ric::protocol::servo_actu actu_pkg;
             actu_pkg.cmd = 1500;
             ric_iface.writeCmd(actu_pkg, sizeof(ric::protocol::servo_actu), ric::protocol::Type::SERVO);
             ric_iface.writeCmd(actu_pkg, sizeof(ric::protocol::servo_actu), ric::protocol::Type::SERVO);
             ric_iface.writeCmd(actu_pkg, sizeof(ric::protocol::servo_actu), ric::protocol::Type::SERVO);
+            ric_iface.writeCmd(actu_pkg, sizeof(ric::protocol::servo_actu), ric::protocol::Type::SERVO);
+            ric_iface.writeCmd(actu_pkg, sizeof(ric::protocol::servo_actu), ric::protocol::Type::SERVO);
+            ric_iface.writeCmd(actu_pkg, sizeof(ric::protocol::servo_actu), ric::protocol::Type::SERVO);
+            ric_iface.writeCmd(actu_pkg, sizeof(ric::protocol::servo_actu), ric::protocol::Type::SERVO);
+            ric_iface.writeCmd(actu_pkg, sizeof(ric::protocol::servo_actu), ric::protocol::Type::SERVO);
+            ric_iface.writeCmd(actu_pkg, sizeof(ric::protocol::servo_actu), ric::protocol::Type::SERVO);
+            ric_iface.writeCmd(actu_pkg, sizeof(ric::protocol::servo_actu), ric::protocol::Type::SERVO);
+            ric_iface.writeCmd(actu_pkg, sizeof(ric::protocol::servo_actu), ric::protocol::Type::SERVO);
+            ric_iface.writeCmd(actu_pkg, sizeof(ric::protocol::servo_actu), ric::protocol::Type::SERVO);
+
             prev_time = ros::Time::now();
         }*/
         ros::spinOnce;
