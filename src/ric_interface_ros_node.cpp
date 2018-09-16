@@ -219,7 +219,6 @@ class RicRosObserver : public ric::RicObserver
                     encoder_msg.id = encoder_pkg.id;
                     encoder_msg.type = encoder_pkg.type;
                     encoder_msg.ticks = encoder_pkg.ticks;
-
                     encoder_pub_.publish(encoder_msg);
                 }
 
@@ -246,14 +245,18 @@ class RicRosObserver : public ric::RicObserver
     }
 
 
-    void onServoCommand(const ric_interface_ros::Encoder::ConstPtr& msg)
+    void onServoCommand(const ric_interface_ros::Servo::ConstPtr& msg)
     {
         ric::protocol::servo servo_pkg;
-        servo_pkg.value = 1500;
+        servo_pkg.id = msg->id;
+        servo_pkg.value = msg->value;
         ric_iface.writeCmd((ric::protocol::actuator&)servo_pkg, sizeof(ric::protocol::servo));
     }
 
 public:
+
+
+
     RicRosObserver(ros::NodeHandle& nh)
     {
         nh_ = &nh;
@@ -308,33 +311,31 @@ int main(int argc, char **argv)
     // register for ric messages
     ric_iface.attach(&ric_observer);
 
-    //TODO: get command messages from topic and send to ric
-
     ros::Time prev_time = ros::Time::now();
 
     while (ros::ok())
     {
         ric_iface.loop();
 
-        /*if (ros::Time::now() - prev_time >= ros::Duration(0.02)) { // 50 hz
-            ric::protocol::servo_actu actu_pkg;
-            actu_pkg.cmd = 1500;
-            ric_iface.writeCmd(actu_pkg, sizeof(ric::protocol::servo_actu), ric::protocol::Type::SERVO);
-            ric_iface.writeCmd(actu_pkg, sizeof(ric::protocol::servo_actu), ric::protocol::Type::SERVO);
-            ric_iface.writeCmd(actu_pkg, sizeof(ric::protocol::servo_actu), ric::protocol::Type::SERVO);
-            ric_iface.writeCmd(actu_pkg, sizeof(ric::protocol::servo_actu), ric::protocol::Type::SERVO);
-            ric_iface.writeCmd(actu_pkg, sizeof(ric::protocol::servo_actu), ric::protocol::Type::SERVO);
-            ric_iface.writeCmd(actu_pkg, sizeof(ric::protocol::servo_actu), ric::protocol::Type::SERVO);
-            ric_iface.writeCmd(actu_pkg, sizeof(ric::protocol::servo_actu), ric::protocol::Type::SERVO);
-            ric_iface.writeCmd(actu_pkg, sizeof(ric::protocol::servo_actu), ric::protocol::Type::SERVO);
-            ric_iface.writeCmd(actu_pkg, sizeof(ric::protocol::servo_actu), ric::protocol::Type::SERVO);
-            ric_iface.writeCmd(actu_pkg, sizeof(ric::protocol::servo_actu), ric::protocol::Type::SERVO);
-            ric_iface.writeCmd(actu_pkg, sizeof(ric::protocol::servo_actu), ric::protocol::Type::SERVO);
-            ric_iface.writeCmd(actu_pkg, sizeof(ric::protocol::servo_actu), ric::protocol::Type::SERVO);
+        if (ros::Time::now() - prev_time >= ros::Duration(0.03)) { // 50 hz
+            ric::protocol::servo actu_pkg;
+            actu_pkg.value = 2000;
+            ric_iface.writeCmd((ric::protocol::actuator&)actu_pkg, sizeof(ric::protocol::servo));
+            //ros::Duration(0.003).sleep();
+            ric_iface.writeCmd((ric::protocol::actuator&)actu_pkg, sizeof(ric::protocol::servo));
+            //ros::Duration(0.003).sleep();
+            ric_iface.writeCmd((ric::protocol::actuator&)actu_pkg, sizeof(ric::protocol::servo));
+          //  ros::Duration(0.003).sleep();
+            ric_iface.writeCmd((ric::protocol::actuator&)actu_pkg, sizeof(ric::protocol::servo));
+           // ros::Duration(0.003).sleep();
+            ric_iface.writeCmd((ric::protocol::actuator&)actu_pkg, sizeof(ric::protocol::servo));
+         //   ros::Duration(0.003).sleep();
+
 
             prev_time = ros::Time::now();
-        }*/
-        ros::spinOnce;
+        }
+
+        ros::spinOnce();
     }
 }
 
