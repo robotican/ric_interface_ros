@@ -317,24 +317,24 @@ int main(int argc, char **argv)
     {
         ric_iface.loop();
 
-        if (ros::Time::now() - prev_time >= ros::Duration(0.03)) { // 50 hz
-            ric::protocol::servo actu_pkg;
-            actu_pkg.value = 2000;
-            ric_iface.writeCmd((ric::protocol::actuator&)actu_pkg, sizeof(ric::protocol::servo));
-            //ros::Duration(0.003).sleep();
-            ric_iface.writeCmd((ric::protocol::actuator&)actu_pkg, sizeof(ric::protocol::servo));
-            //ros::Duration(0.003).sleep();
-            ric_iface.writeCmd((ric::protocol::actuator&)actu_pkg, sizeof(ric::protocol::servo));
-          //  ros::Duration(0.003).sleep();
-            ric_iface.writeCmd((ric::protocol::actuator&)actu_pkg, sizeof(ric::protocol::servo));
-           // ros::Duration(0.003).sleep();
-            ric_iface.writeCmd((ric::protocol::actuator&)actu_pkg, sizeof(ric::protocol::servo));
-         //   ros::Duration(0.003).sleep();
-
-
-            prev_time = ros::Time::now();
-        }
-
+//        if (ros::Time::now() - prev_time >= ros::Duration(0.03)) { // 50 hz
+//            ric::protocol::servo actu_pkg;
+//            actu_pkg.value = 2000;
+//            ric_iface.writeCmd((ric::protocol::actuator&)actu_pkg, sizeof(ric::protocol::servo));
+//            //ros::Duration(0.003).sleep();
+//            ric_iface.writeCmd((ric::protocol::actuator&)actu_pkg, sizeof(ric::protocol::servo));
+//            //ros::Duration(0.003).sleep();
+//            ric_iface.writeCmd((ric::protocol::actuator&)actu_pkg, sizeof(ric::protocol::servo));
+//          //  ros::Duration(0.003).sleep();
+//            ric_iface.writeCmd((ric::protocol::actuator&)actu_pkg, sizeof(ric::protocol::servo));
+//           // ros::Duration(0.003).sleep();
+//            ric_iface.writeCmd((ric::protocol::actuator&)actu_pkg, sizeof(ric::protocol::servo));
+//         //   ros::Duration(0.003).sleep();
+//
+//
+//            prev_time = ros::Time::now();
+//        }
+        ros::Duration(0.001).sleep();
         ros::spinOnce();
     }
 }
