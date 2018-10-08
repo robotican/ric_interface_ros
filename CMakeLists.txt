@@ -47,7 +47,7 @@ find_package(catkin REQUIRED COMPONENTS
    Orientation.msg
    Proximity.msg
    Servo.msg
-   #Battery.msg
+   Battery.msg
    Toggle.msg
    Keepalive.msg
  )

@@ -12,6 +12,7 @@
 #include <ric_interface_ros/Encoder.h>
 #include <ric_interface_ros/Servo.h>
 #include <ric_interface_ros/Toggle.h>
+#include <ric_interface_ros/Battery.h>
 #include <ric_interface_ros/Proximity.h>
 #include <ric_interface_ros/Logger.h>
 #include <ric_interface_ros/Error.h>
@@ -37,6 +38,7 @@ class RicRosObserver : public ric::RicObserver
     ros::Publisher logger_pub_;
     ros::Publisher error_pub_;
     ros::Publisher ka_pub_;
+    ros::Publisher battery_pub_;
 
     ros::Subscriber servo_cmd_sub_;
 
@@ -49,6 +51,7 @@ class RicRosObserver : public ric::RicObserver
     bool publish_logger = true;
     bool publish_error = true;
     bool publish_keepalive = true;
+    bool publish_battery = true;
 
 
     void on_update(const ric::protocol::package &ric_package)
@@ -196,6 +199,8 @@ class RicRosObserver : public ric::RicObserver
                     toggle_msg.id = toggle_pkg.id;
                     toggle_msg.on = toggle_pkg.on;
 
+                    toggle_pub_.publish(toggle_msg);
+
                 }
 
                 break;
@@ -226,7 +231,23 @@ class RicRosObserver : public ric::RicObserver
                     servo_msg.id = servo_pkg.id;
                     servo_msg.value = servo_pkg.value;
 
-                    encoder_pub_.publish(servo_msg);
+                    servo_pub_.publish(servo_msg);
+                }
+
+                break;
+            }
+            case (int) ric::protocol::Type::BATTERY:
+            {
+                if (publish_battery)
+                {
+                    ric::protocol::battery battery_pkg = (ric::protocol::battery&) ric_package;
+
+                    ric_interface_ros::Battery battery_msg;
+
+                    battery_msg.id = battery_pkg.id;
+                    battery_msg.value = battery_pkg.value / 1000.0;
+
+                    battery_pub_.publish(battery_msg);
                 }
 
                 break;
@@ -256,6 +277,7 @@ public:
         servo_pub_ = nh.advertise<ric_interface_ros::Servo>("ric/servo/data", 10);
         toggle_pub_ = nh.advertise<ric_interface_ros::Toggle>("ric/toggle", 10);
         proximity_pub_ = nh.advertise<ric_interface_ros::Proximity>("ric/proximity", 10);
+        battery_pub_ = nh.advertise<ric_interface_ros::Battery>("ric/battery", 10);
         logger_pub_ = nh.advertise<ric_interface_ros::Logger>("ric/logger", 10);
         error_pub_ = nh.advertise<ric_interface_ros::Error>("ric/error", 10);
         ka_pub_ = nh.advertise<ric_interface_ros::Keepalive>("ric/keepalive", 10);

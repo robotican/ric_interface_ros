@@ -11,6 +11,7 @@
         <param name="publish_servo" value="true" />
         <param name="publish_toggle" value="true" />
         <param name="publish_proximity" value="true" />
+        <param name="publish_battery" value="true" />
         <param name="publish_logger" value="true" />
         <param name="publish_error" value="true" />
         <param name="publish_keepalive" value="true" />
