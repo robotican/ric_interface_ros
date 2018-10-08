@@ -47,8 +47,7 @@ find_package(catkin REQUIRED COMPONENTS
    Orientation.msg
    Proximity.msg
    Servo.msg
-   Battery.msg
-   Led.msg
+   #Battery.msg
    Toggle.msg
    Keepalive.msg
  )
@@ -93,9 +92,10 @@ include_directories(
 ## The recommended prefix ensures that target names across packages don't collide
  add_executable(${PROJECT_NAME}_node
          src/ric_interface_ros_node.cpp
-         src/ric_ros_observer.cpp
+         #src/ric_ros_observer.cpp
 
-         include/ric_ros_observer.h)
+         #include/ric_ros_observer.h
+         )
 
 
 ## Add cmake target dependencies of the executable
