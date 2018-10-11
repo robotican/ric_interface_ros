@@ -82,6 +82,7 @@ class RicRosObserver : public ric::RicObserver
                         ric_interface_ros::Logger logger_msg;
                         logger_msg.id = logger_pkg.id;
                         logger_msg.message = logger_pkg.msg;
+                        logger_msg.sevirity = logger_pkg.sevirity;
                         logger_pub_.publish(logger_msg);
                     }
                 }
