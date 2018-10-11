@@ -161,7 +161,7 @@ class RicRosObserver : public ric::RicObserver
                     ric::protocol::proximity prox_pkg = (ric::protocol::proximity &) ric_package;
                     ric_interface_ros::Proximity prox_msg;
                     prox_msg.id = prox_pkg.id;
-                    prox_msg.distance = prox_pkg.distance;
+                    prox_msg.distance = prox_pkg.value;
                     proximity_pub_.publish(prox_msg);
                 }
 
