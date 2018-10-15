@@ -131,8 +131,6 @@ class RicRosObserver : public ric::RicObserver
                     orientation_msg.mag_y = orientation_pkg.mag_y;
                     orientation_msg.mag_z = orientation_pkg.mag_z;
 
-                    orientation_pub_.publish(orientation_msg);
-
                     /*fprintf(stderr, "imu:\troll: %f,\tpitch: %f,\tyaw: %f \n",
                                 orientation_pkg.roll_rad * 180 / M_PI,
                                 orientation_pkg.pitch_rad * 180 / M_PI,
@@ -149,7 +147,9 @@ class RicRosObserver : public ric::RicObserver
                                 orientation_pkg.mag_x_rad * 180 / M_PI,
                                 orientation_pkg.mag_y_rad * 180 / M_PI,
                                 orientation_pkg.mag_z_rad * 180 / M_PI);*/
-                    //TODO: PUBLISH ROS MESSAGE
+
+                    orientation_pub_.publish(orientation_msg);
+
                 }
 
                 break;
