@@ -314,7 +314,7 @@ int main(int argc, char **argv)
     ros::init(argc, argv, "ric_interface_node");
     ros::NodeHandle nh;
 
-    std::string port = "/dev/ttyACM0";
+    std::string port = "/dev/mobilican/RICBOARD";
     ros::param::get("~ric_port", port);
 
 
