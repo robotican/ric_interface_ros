@@ -6,6 +6,7 @@
 /* Author: Elhay Rauper */
 
 #include <ros/ros.h>
+#include <std_srvs/Trigger.h>
 #include <ric_interface/ric_interface.h>
 #include <ric_interface_ros/Location.h>
 #include <ric_interface_ros/Orientation.h>
@@ -41,6 +42,7 @@ class RicRosObserver : public ric::RicObserver
     ros::Publisher battery_pub_;
 
     ros::Subscriber servo_cmd_sub_;
+    ros::ServiceServer terminate_srv_;
 
     bool publish_location = true;
     bool publish_orientation = true;
@@ -53,6 +55,7 @@ class RicRosObserver : public ric::RicObserver
     bool publish_keepalive = true;
     bool publish_battery = true;
 
+    bool shutdown_request_ = false;
 
     void on_update(const ric::protocol::package &ric_package)
     {
@@ -265,9 +268,16 @@ class RicRosObserver : public ric::RicObserver
         ric_iface.writeCmd((ric::protocol::package&)servo_pkg, sizeof(ric::protocol::servo));
     }
 
+    bool onTerminate(std_srvs::Trigger::Request &req,
+                     std_srvs::Trigger::Response &res)
+    {
+        shutdown_request_ = true;
+        return true;
+    }
+
 public:
 
-
+    bool isShutdownRequested() { return shutdown_request_; }
 
     RicRosObserver(ros::NodeHandle& nh)
     {
@@ -284,6 +294,8 @@ public:
         ka_pub_ = nh.advertise<ric_interface_ros::Keepalive>("ric/keepalive", 10);
 
         servo_cmd_sub_ = nh.subscribe("ric/servo/cmd", 10, &RicRosObserver::onServoCommand, this);
+
+        terminate_srv_ = nh.advertiseService("terminate_ric", &RicRosObserver::onTerminate, this);
 
         ros::param::get("~location", publish_location);
         ros::param::get("~orientation", publish_orientation);
@@ -302,11 +314,11 @@ int main(int argc, char **argv)
     ros::init(argc, argv, "ric_interface_node");
     ros::NodeHandle nh;
 
-    std::string port = "/dev/mobilican/RICBOARD";
+    std::string port = "/dev/ttyACM0";
     ros::param::get("~ric_port", port);
 
 
-    ROS_INFO("[ric_interface_ros]: connecting to %s", port.c_str());
+    ROS_INFO("connecting to %s", port.c_str());
     try
     {
         ric_iface.connect(port);
@@ -316,7 +328,7 @@ int main(int argc, char **argv)
         ROS_ERROR("%s", exp.what());
         exit(EXIT_FAILURE);
     }
-    ROS_INFO("[ric_interface_ros]: RicBoard connected.");
+    ROS_INFO("RicBoard connected.");
 
 
     RicRosObserver ric_observer(nh);
@@ -329,6 +341,12 @@ int main(int argc, char **argv)
     while (ros::ok())
     {
         ric_iface.loop();
+
+        if (ric_observer.isShutdownRequested())
+        {
+            ROS_ERROR("got shudown request, terminating ric interface");
+            ros::shutdown();
+        }
 
 //        if (ros::Time::now() - prev_time >= ros::Duration(0.03)) { // 50 hz
 //            ric::protocol::servo actu_pkg;
