@@ -1,4 +1,5 @@
 uint8 id
+uint8 status
 
 float64 lat
 float64 lon

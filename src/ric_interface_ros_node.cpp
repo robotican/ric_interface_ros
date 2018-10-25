@@ -16,7 +16,6 @@
 #include <ric_interface_ros/Battery.h>
 #include <ric_interface_ros/Proximity.h>
 #include <ric_interface_ros/Logger.h>
-#include <ric_interface_ros/Error.h>
 #include <ric_interface_ros/Keepalive.h>
 
 
@@ -37,7 +36,6 @@ class RicRosObserver : public ric::RicObserver
     ros::Publisher toggle_pub_;
     ros::Publisher proximity_pub_;
     ros::Publisher logger_pub_;
-    ros::Publisher error_pub_;
     ros::Publisher ka_pub_;
     ros::Publisher battery_pub_;
 
@@ -51,7 +49,6 @@ class RicRosObserver : public ric::RicObserver
     bool publish_toggle = true;
     bool publish_proximity = true;
     bool publish_logger = true;
-    bool publish_error = true;
     bool publish_keepalive = true;
     bool publish_battery = true;
 
@@ -70,6 +67,8 @@ class RicRosObserver : public ric::RicObserver
 
                     ric_interface_ros::Keepalive ka_msg;
                     ka_msg.id = ka_pkg.id;
+                    ka_msg.status = ka_pkg.status;
+                    ka_msg.time_stamp = ka_pkg.time_stamp;
                     ka_pub_.publish(ka_msg);
 
                     break;
@@ -84,28 +83,10 @@ class RicRosObserver : public ric::RicObserver
                     {
                         ric_interface_ros::Logger logger_msg;
                         logger_msg.id = logger_pkg.id;
+                        logger_msg.status = logger_pkg.status;
                         logger_msg.message = logger_pkg.msg;
                         logger_msg.sevirity = logger_pkg.sevirity;
                         logger_pub_.publish(logger_msg);
-                    }
-                }
-
-
-                break;
-            }
-            case (uint8_t) ric::protocol::Type::ERROR:
-            {
-                if (publish_error)
-                {
-                    ric::protocol::error err_pkg = (ric::protocol::error &) ric_package;
-                    if (err_pkg.type == (uint8_t) ric::protocol::Type::ERROR)
-                    {
-                        ric_interface_ros::Error error_msg;
-                        error_msg.id = err_pkg.id;
-                        error_msg.code = err_pkg.code;
-                        error_msg.comp_id = error_msg.comp_id;
-                        error_msg.comp_type = error_msg.comp_type;
-                        error_pub_.publish(error_msg);
                     }
                 }
 
@@ -121,6 +102,7 @@ class RicRosObserver : public ric::RicObserver
                     ric_interface_ros::Orientation orientation_msg;
 
                     orientation_msg.id = orientation_pkg.id;
+                    orientation_msg.status = orientation_pkg.status;
                     orientation_msg.roll = orientation_pkg.roll;
                     orientation_msg.pitch = orientation_pkg.pitch;
                     orientation_msg.yaw = orientation_pkg.yaw;
@@ -164,6 +146,7 @@ class RicRosObserver : public ric::RicObserver
                     ric::protocol::proximity prox_pkg = (ric::protocol::proximity &) ric_package;
                     ric_interface_ros::Proximity prox_msg;
                     prox_msg.id = prox_pkg.id;
+                    prox_msg.status = prox_pkg.status;
                     prox_msg.distance = prox_pkg.value;
                     proximity_pub_.publish(prox_msg);
                 }
@@ -179,6 +162,7 @@ class RicRosObserver : public ric::RicObserver
                     ric_interface_ros::Location location_msg;
 
                     location_msg.id = location_pkg.id;
+                    location_msg.status = location_pkg.status;
                     location_msg.lat = location_pkg.lat;
                     location_msg.lon = location_pkg.lon;
                     location_msg.alt = location_pkg.alt;
@@ -201,6 +185,7 @@ class RicRosObserver : public ric::RicObserver
                     ric_interface_ros::Toggle toggle_msg;
 
                     toggle_msg.id = toggle_pkg.id;
+                    toggle_msg.status = toggle_pkg.status;
                     toggle_msg.on = toggle_pkg.on;
 
                     toggle_pub_.publish(toggle_msg);
@@ -218,6 +203,7 @@ class RicRosObserver : public ric::RicObserver
                     ric_interface_ros::Encoder encoder_msg;
 
                     encoder_msg.id = encoder_pkg.id;
+                    encoder_msg.status = encoder_pkg.status;
                     encoder_msg.ticks = encoder_pkg.ticks;
                     encoder_pub_.publish(encoder_msg);
                 }
@@ -233,6 +219,7 @@ class RicRosObserver : public ric::RicObserver
                     ric_interface_ros::Servo servo_msg;
 
                     servo_msg.id = servo_pkg.id;
+                    servo_msg.status = servo_pkg.status;
                     servo_msg.value = servo_pkg.value;
 
                     servo_pub_.publish(servo_msg);
@@ -249,6 +236,7 @@ class RicRosObserver : public ric::RicObserver
                     ric_interface_ros::Battery battery_msg;
 
                     battery_msg.id = battery_pkg.id;
+                    battery_msg.status = battery_pkg.status;
                     battery_msg.value = battery_pkg.value / 1000.0;
 
                     battery_pub_.publish(battery_msg);
@@ -290,7 +278,6 @@ public:
         proximity_pub_ = nh.advertise<ric_interface_ros::Proximity>("ric/proximity", 10);
         battery_pub_ = nh.advertise<ric_interface_ros::Battery>("ric/battery", 10);
         logger_pub_ = nh.advertise<ric_interface_ros::Logger>("ric/logger", 10);
-        error_pub_ = nh.advertise<ric_interface_ros::Error>("ric/error", 10);
         ka_pub_ = nh.advertise<ric_interface_ros::Keepalive>("ric/keepalive", 10);
 
         servo_cmd_sub_ = nh.subscribe("ric/servo/cmd", 10, &RicRosObserver::onServoCommand, this);
@@ -304,7 +291,6 @@ public:
         ros::param::get("~toggle", publish_toggle);
         ros::param::get("~proximity", publish_proximity);
         ros::param::get("~logger", publish_logger);
-        ros::param::get("~error", publish_error);
     }
 };
 
