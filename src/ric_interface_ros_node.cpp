@@ -69,6 +69,11 @@ class RicRosObserver : public ric::RicObserver
                     ka_msg.id = ka_pkg.id;
                     ka_msg.status = ka_pkg.status;
                     ka_msg.time_stamp = ka_pkg.time_stamp;
+                    ka_msg.hw_id = ka_pkg.hw_id;
+                    ka_msg.err_bits = ka_pkg.err_bits;
+                    ka_msg.soft_major = ka_pkg.firm_ver.major;
+                    ka_msg.soft_minor = ka_pkg.firm_ver.minor;
+                    ka_msg.soft_patch = ka_pkg.firm_ver.patch;
                     ka_pub_.publish(ka_msg);
 
                     break;
